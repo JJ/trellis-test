@@ -1,13 +1,13 @@
-#!/bin/sh
-#
-# SOB=$(git var GIT_AUTHOR_IDENT | sed -n 's/^\(.*>\).*$/Signed-off-by: \1/p')
-# grep -qs "^$SOB" "$1" || echo "$SOB" >> "$1"
+#!/usr/bin/env perl
 
-# This example catches duplicate Signed-off-by lines.
+use v5.14;
 
-if [ test "" = "$(egrep 'grep -oP '#\K([0-9]+)' "$1") ]
-then
-        issues= $(egrep 'grep -oP '#\K([0-9]+)' "$1"
-        echo $issues
-        exit 1
-fi
+my $msg = shift;
+my @issues = ($msg =~ /\#(\d+)/g);
+exit(1) if (!@issues );
+my $repo_uri = `git config --get remote.origin.url`;
+my ($user,$repo) = ($repo_uri =~ /(\w+)\/([^.]+)/);
+for my $i (@issues) {
+  my $issue = `wget -O - https://github.com/$user/$repo/issues/$i`;
+  die "Issue $issue no existe" if !$issue;
+}
