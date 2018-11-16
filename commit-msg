@@ -1,0 +1,13 @@
+#!/bin/sh
+#
+# SOB=$(git var GIT_AUTHOR_IDENT | sed -n 's/^\(.*>\).*$/Signed-off-by: \1/p')
+# grep -qs "^$SOB" "$1" || echo "$SOB" >> "$1"
+
+# This example catches duplicate Signed-off-by lines.
+
+if [ test "" = "$(egrep 'grep -oP '#\K([0-9]+)' "$1") ]
+then
+        issues= $(egrep 'grep -oP '#\K([0-9]+)' "$1"
+        echo $issues
+        exit 1
+fi
